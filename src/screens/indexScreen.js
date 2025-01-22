@@ -1,10 +1,19 @@
-import React, { useContext, useLayoutEffect } from "react";
+import React, { useContext, useLayoutEffect, useEffect } from "react";
 import { StyleSheet, Text, View, FlatList, Button, TouchableOpacity } from "react-native";
 import { Context } from "../context/BlogContext";
 import { Feather } from '@expo/vector-icons';
 
 const IndexScreen = ({ navigation }) => {
-    const { state, deleteBlogPost } = useContext(Context);
+    const { state, deleteBlogPost, getBlogPost } = useContext(Context);
+
+    useEffect(() => {
+        getBlogPost();
+        const unsubscribe = navigation.addListener('focus', () => {
+            getBlogPost();
+        });
+        return unsubscribe; // The function returned by addListener acts as the cleanup function
+    }, [navigation]);
+
 
     // Set the header button dynamically
     useLayoutEffect(() => {
@@ -16,6 +25,7 @@ const IndexScreen = ({ navigation }) => {
             ),
         });
     }, [navigation]);
+    console.log(state.id);
 
     return (
         <View style={styles.container}>
